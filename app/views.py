@@ -57,6 +57,29 @@ def movies():
 
 
 
+# Route to serve movie list as JSON
+@app.route('/api/v1/movies', methods=['GET'])
+def get_movies():
+    movies = Movie.query.all()
+    movie_list = []
+
+    for movie in movies:
+        movie_list.append({
+            "id": movie.id,
+            "title": movie.title,
+            "description": movie.description,
+            "poster": f"/api/v1/posters/{movie.poster}"
+        })
+
+    return jsonify(movies=movie_list)
+
+
+# Route to serve uploaded poster images
+@app.route('/api/v1/posters/<filename>')
+def get_poster(filename):
+    return send_file(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+
+
 ###
 # The functions below should be applicable to all Flask apps.
 ###
